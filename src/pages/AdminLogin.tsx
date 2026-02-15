@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,9 +11,17 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [waitingForAdmin, setWaitingForAdmin] = useState(false);
+  const { signIn, user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Once isAdmin becomes true after login, navigate to admin
+  useEffect(() => {
+    if (waitingForAdmin && user && isAdmin) {
+      navigate("/admin");
+    }
+  }, [waitingForAdmin, user, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,12 +29,11 @@ export default function AdminLogin() {
     const { error } = await signIn(email, password);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
+      setLoading(false);
     } else {
-      // After sign in, the auth context will check admin role
-      // We redirect to admin and the admin guard will verify
-      navigate("/admin");
+      // Wait for isAdmin to be set by AuthContext
+      setWaitingForAdmin(true);
     }
-    setLoading(false);
   };
 
   return (
@@ -40,8 +47,8 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input type="email" placeholder="Correo del administrador" value={email} onChange={(e) => setEmail(e.target.value)} required />
             <Input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Verificando..." : "Acceder"}
+            <Button type="submit" className="w-full" disabled={loading || waitingForAdmin}>
+              {loading || waitingForAdmin ? "Verificando..." : "Acceder"}
             </Button>
           </form>
         </CardContent>
