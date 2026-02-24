@@ -34,15 +34,7 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Find or reuse Stripe customer
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId: string | undefined;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-    }
-
     const origin = req.headers.get("origin") || "https://salud-felicidad-hub.lovable.app";
-
     const lineItems = items.map((item: { name: string; price: number; quantity: number }) => ({
       price_data: {
         currency: "mxn",
@@ -53,8 +45,7 @@ serve(async (req) => {
     }));
 
     const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+      customer_email: user.email,
       line_items: lineItems,
       mode: "payment",
       success_url: `${origin}/payment-success?order_id=${orderId}`,
