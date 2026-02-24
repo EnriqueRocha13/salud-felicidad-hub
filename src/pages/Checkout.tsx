@@ -6,7 +6,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { MapPin, Loader2 } from "lucide-react";
+import { MapPin, Loader2, CreditCard } from "lucide-react";
 import { BrandName } from "@/components/BrandName";
 
 export default function Checkout() {
@@ -33,43 +33,61 @@ export default function Checkout() {
     );
   };
 
-  const handleOrder = async () => {
+  const handleStripePayment = async () => {
     if (!user) return;
     setSubmitting(true);
 
-    const { data: order, error } = await supabase
-      .from("orders")
-      .insert({
-        user_id: user.id,
-        total_price: total,
-        gps_lat: gps?.lat ?? null,
-        gps_lon: gps?.lon ?? null,
-        payment_method: "pending",
-        status: "pending",
-      })
-      .select()
-      .single();
+    try {
+      // 1. Create order in DB
+      const { data: order, error } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user.id,
+          total_price: total,
+          gps_lat: gps?.lat ?? null,
+          gps_lon: gps?.lon ?? null,
+          payment_method: "stripe",
+          status: "pending",
+        })
+        .select()
+        .single();
 
-    if (error || !order) {
-      toast({ title: "Error", description: "No se pudo crear el pedido", variant: "destructive" });
+      if (error || !order) {
+        toast({ title: "Error", description: "No se pudo crear el pedido", variant: "destructive" });
+        setSubmitting(false);
+        return;
+      }
+
+      // 2. Insert order items
+      const orderItems = items.map((item) => ({
+        order_id: order.id,
+        product_id: item.id,
+        quantity: item.quantity,
+        price_at_order: item.price,
+        product_name: item.name,
+      }));
+      await supabase.from("order_items").insert(orderItems);
+
+      // 3. Call Stripe edge function
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke("create-payment", {
+        body: {
+          items: items.map((i) => ({ name: i.name, price: i.price, quantity: i.quantity })),
+          orderId: order.id,
+        },
+      });
+
+      if (paymentError || !paymentData?.url) {
+        toast({ title: "Error de pago", description: "No se pudo iniciar el pago con Stripe", variant: "destructive" });
+        setSubmitting(false);
+        return;
+      }
+
+      clearCart();
+      window.location.href = paymentData.url;
+    } catch (err) {
+      toast({ title: "Error", description: "Ocurrió un error inesperado", variant: "destructive" });
       setSubmitting(false);
-      return;
     }
-
-    const orderItems = items.map((item) => ({
-      order_id: order.id,
-      product_id: item.id,
-      quantity: item.quantity,
-      price_at_order: item.price,
-      product_name: item.name,
-    }));
-
-    await supabase.from("order_items").insert(orderItems);
-
-    clearCart();
-    toast({ title: "¡Pedido creado!", description: "Tu pedido ha sido registrado exitosamente." });
-    navigate("/");
-    setSubmitting(false);
   };
 
   if (items.length === 0) {
@@ -117,9 +135,9 @@ export default function Checkout() {
         </CardContent>
       </Card>
 
-      <Button className="w-full" size="lg" onClick={handleOrder} disabled={submitting}>
-        {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-        Confirmar Pedido
+      <Button className="w-full" size="lg" onClick={handleStripePayment} disabled={submitting}>
+        {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CreditCard className="h-4 w-4 mr-2" />}
+        Pagar con Stripe · ${total.toFixed(2)} MXN
       </Button>
     </div>
   );

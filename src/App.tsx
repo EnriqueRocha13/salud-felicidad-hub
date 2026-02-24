@@ -22,6 +22,7 @@ import AdminBundles from "./pages/admin/AdminBundles";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminChat from "./pages/admin/AdminChat";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/support" element={<Support />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/payment-success" element={<PaymentSuccess />} />
               </Route>
 
               {/* Admin login (no layout) */}
