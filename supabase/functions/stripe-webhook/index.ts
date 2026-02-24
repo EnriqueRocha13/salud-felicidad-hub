@@ -39,16 +39,16 @@ serve(async (req) => {
 
     const event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
 
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       const orderId = session.metadata?.order_id;
 
       if (orderId) {
-        const supabaseAdmin = createClient(
-          Deno.env.get("SUPABASE_URL") ?? "",
-          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-        );
-
         const { error } = await supabaseAdmin
           .from("orders")
           .update({
@@ -64,8 +64,50 @@ serve(async (req) => {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
-
         console.log(`Order ${orderId} updated to paid`);
+      }
+    } else if (event.type === "payment_intent.payment_failed") {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      const failureMessage = paymentIntent.last_payment_error?.message || "Unknown error";
+
+      // Find order by payment_id
+      const { data: orders, error: fetchError } = await supabaseAdmin
+        .from("orders")
+        .select("id")
+        .eq("payment_id", paymentIntent.id)
+        .limit(1);
+
+      if (fetchError) {
+        console.error("Error fetching order:", fetchError);
+      } else if (orders && orders.length > 0) {
+        const { error } = await supabaseAdmin
+          .from("orders")
+          .update({ status: "failed" })
+          .eq("id", orders[0].id);
+
+        if (error) {
+          console.error("Error updating order to failed:", error);
+        } else {
+          console.log(`Order ${orders[0].id} marked as failed: ${failureMessage}`);
+        }
+      } else {
+        console.log(`No order found for payment_intent ${paymentIntent.id}`);
+      }
+    } else if (event.type === "checkout.session.expired") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const orderId = session.metadata?.order_id;
+
+      if (orderId) {
+        const { error } = await supabaseAdmin
+          .from("orders")
+          .update({ status: "expired" })
+          .eq("id", orderId);
+
+        if (error) {
+          console.error("Error updating expired order:", error);
+        } else {
+          console.log(`Order ${orderId} marked as expired`);
+        }
       }
     }
 
