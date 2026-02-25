@@ -67,7 +67,7 @@ async function sendOrderEmail(email: string, orderId: string, status: string, to
         Authorization: `Bearer ${resendKey}`,
       },
       body: JSON.stringify({
-        from: "Salud y Felicidad <onboarding@resend.dev>",
+        from: "Salud y Felicidad <ventas@saludfelicidad.store>",
         to: [email],
         subject: info.subject,
         html,
