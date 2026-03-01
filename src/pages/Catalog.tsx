@@ -17,7 +17,6 @@ export default function Catalog() {
         .from("products")
         .select("*")
         .eq("active", true)
-        .eq("is_medical_article", false)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
