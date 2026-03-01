@@ -65,9 +65,9 @@ export default function BundleDetail() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product: any) => (
           <Card key={product.id} className="overflow-hidden">
-            <div className="h-40 bg-muted flex items-center justify-center">
+            <div className="h-48 bg-white flex items-center justify-center p-2">
               {product.image_url ? (
-                <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                <img src={product.image_url} alt={product.name} className="max-w-full max-h-full object-contain" />
               ) : (
                 <span className="text-muted-foreground text-sm">Sin imagen</span>
               )}
