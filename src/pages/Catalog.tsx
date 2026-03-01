@@ -59,9 +59,9 @@ export default function Catalog() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {products?.map((product) => (
               <Card key={product.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
-                <div className="h-48 bg-muted flex items-center justify-center overflow-hidden">
+                <div className="h-56 bg-white flex items-center justify-center overflow-hidden p-2">
                   {product.image_url ? (
-                    <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <img src={product.image_url} alt={product.name} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform" />
                   ) : (
                     <span className="text-muted-foreground text-sm">Sin imagen</span>
                   )}
