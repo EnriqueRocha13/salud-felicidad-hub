@@ -84,9 +84,9 @@ export default function Index() {
                   className="flex-shrink-0 w-64 snap-start group"
                 >
                   <div className="rounded-lg overflow-hidden border bg-background hover:shadow-lg transition-shadow">
-                    <div className="h-40 bg-muted flex items-center justify-center overflow-hidden">
+                    <div className="h-48 bg-white flex items-center justify-center overflow-hidden p-2">
                       {article.image_url ? (
-                        <img src={article.image_url} alt={article.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <img src={article.image_url} alt={article.name} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform" />
                       ) : (
                         <span className="text-muted-foreground text-sm">Sin imagen</span>
                       )}
