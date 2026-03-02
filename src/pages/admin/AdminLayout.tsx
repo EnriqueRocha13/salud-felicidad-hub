@@ -20,9 +20,9 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen flex bg-background">
       {/* Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col border-r bg-card p-4">
+      <aside className="hidden md:flex w-64 flex-col border-r bg-card p-4 h-screen sticky top-0">
         <BrandName className="text-lg text-primary mb-6 block" />
-        <nav className="space-y-1 flex-1">
+        <nav className="space-y-1 flex-1 overflow-auto">
           {navItems.map((item) => (
             <Link key={item.to} to={item.to}>
               <Button
@@ -34,7 +34,7 @@ export default function AdminLayout() {
             </Link>
           ))}
         </nav>
-        <div className="border-t pt-4 space-y-2">
+        <div className="border-t pt-4 space-y-2 shrink-0">
           <Link to="/">
             <Button variant="ghost" className="w-full justify-start gap-2">
               <Home className="h-4 w-4" /> Sitio Público
