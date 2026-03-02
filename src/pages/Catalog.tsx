@@ -96,12 +96,23 @@ export default function Catalog() {
                 {bundles.map((bundle) => (
                   <Link to={`/bundle/${bundle.id}`} key={bundle.id}>
                     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                      <div className="h-48 bg-muted flex items-center justify-center">
-                        {bundle.image_url ? (
-                          <img src={bundle.image_url} alt={bundle.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-muted-foreground text-sm">Conjunto</span>
-                        )}
+                      <div className="h-48 bg-white p-2">
+                        {(() => {
+                          const imgs = (bundle as any).bundle_products
+                            ?.map((bp: any) => bp.products)
+                            .filter((p: any) => p?.image_url) || [];
+                          if (imgs.length === 0) return <div className="w-full h-full flex items-center justify-center bg-muted rounded"><span className="text-muted-foreground text-sm">Sin productos</span></div>;
+                          const count = Math.min(imgs.length, 4);
+                          return (
+                            <div className={`grid gap-1 w-full h-full ${count === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                              {imgs.slice(0, 4).map((p: any) => (
+                                <div key={p.id} className="flex items-center justify-center overflow-hidden rounded bg-white">
+                                  <img src={p.image_url} alt={p.name} className="max-w-full max-h-full object-contain" />
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })()}
                       </div>
                       <CardContent className="p-4">
                         <h3 className="font-semibold text-lg">{bundle.name}</h3>
