@@ -8,13 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, Share2 } from "lucide-react";
+import { Plus, Trash2, Share2, Pencil } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function AdminBundles() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", description: "" });
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
 
@@ -41,25 +42,39 @@ export default function AdminBundles() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const { data: bundle, error } = await supabase
-        .from("product_bundles")
-        .insert({ name: form.name, description: form.description })
-        .select()
-        .single();
-      if (error || !bundle) throw error;
+      if (editId) {
+        const { error } = await supabase
+          .from("product_bundles")
+          .update({ name: form.name, description: form.description })
+          .eq("id", editId);
+        if (error) throw error;
 
-      if (selectedProducts.length > 0) {
-        await supabase.from("bundle_products").insert(
-          selectedProducts.map((pid) => ({ bundle_id: bundle.id, product_id: pid }))
-        );
+        // Replace bundle products
+        await supabase.from("bundle_products").delete().eq("bundle_id", editId);
+        if (selectedProducts.length > 0) {
+          await supabase.from("bundle_products").insert(
+            selectedProducts.map((pid) => ({ bundle_id: editId, product_id: pid }))
+          );
+        }
+      } else {
+        const { data: bundle, error } = await supabase
+          .from("product_bundles")
+          .insert({ name: form.name, description: form.description })
+          .select()
+          .single();
+        if (error || !bundle) throw error;
+
+        if (selectedProducts.length > 0) {
+          await supabase.from("bundle_products").insert(
+            selectedProducts.map((pid) => ({ bundle_id: bundle.id, product_id: pid }))
+          );
+        }
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-bundles"] });
-      toast({ title: "Conjunto creado" });
-      setForm({ name: "", description: "" });
-      setSelectedProducts([]);
-      setOpen(false);
+      toast({ title: editId ? "Conjunto actualizado" : "Conjunto creado" });
+      resetForm();
     },
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
   });
@@ -75,25 +90,35 @@ export default function AdminBundles() {
     },
   });
 
-  const copyLink = (id: string) => {
-    navigator.clipboard.writeText(`${window.location.origin}/bundle/${id}`);
-    toast({ title: "Enlace copiado" });
+  const resetForm = () => {
+    setForm({ name: "", description: "" });
+    setSelectedProducts([]);
+    setEditId(null);
+    setOpen(false);
   };
 
-  const shareToFacebook = (id: string) => {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${window.location.origin}/bundle/${id}`)}`, "_blank");
+  const startEdit = (bundle: any) => {
+    setEditId(bundle.id);
+    setForm({ name: bundle.name, description: bundle.description || "" });
+    setSelectedProducts(bundle.bundle_products?.map((bp: any) => bp.product_id) || []);
+    setOpen(true);
+  };
+
+  const copyLink = (id: string) => {
+    navigator.clipboard.writeText(`${window.location.origin}/bundle/${id}`);
+    toast({ title: "Enlace copiado", description: "Pega este enlace en tu publicación de Facebook o Instagram" });
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Conjuntos de Productos</h1>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); else setOpen(true); }}>
           <DialogTrigger asChild>
             <Button><Plus className="h-4 w-4 mr-1" /> Generar Conjunto</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader><DialogTitle>Nuevo Conjunto</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editId ? "Editar Conjunto" : "Nuevo Conjunto"}</DialogTitle></DialogHeader>
             <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(); }} className="space-y-4">
               <Input placeholder="Nombre del conjunto" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
               <Textarea placeholder="Descripción" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
@@ -114,7 +139,7 @@ export default function AdminBundles() {
                 </div>
               </div>
               <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
-                {saveMutation.isPending ? "Creando..." : "Crear Conjunto"}
+                {saveMutation.isPending ? "Guardando..." : editId ? "Guardar Cambios" : "Crear Conjunto"}
               </Button>
             </form>
           </DialogContent>
@@ -134,8 +159,12 @@ export default function AdminBundles() {
                   </p>
                 </div>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => copyLink(bundle.id)}><Share2 className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="sm" onClick={() => shareToFacebook(bundle.id)}>FB</Button>
+                  <Button variant="ghost" size="icon" onClick={() => copyLink(bundle.id)} title="Copiar enlace">
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => startEdit(bundle)} title="Editar">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
                   <Button variant="ghost" size="icon" className="text-destructive" onClick={() => deleteMutation.mutate(bundle.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
