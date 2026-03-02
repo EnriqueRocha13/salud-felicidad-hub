@@ -29,13 +29,9 @@ export default function BundleDetail() {
 
   const shareUrl = window.location.href;
 
-  const shareToFacebook = () => {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
-  };
-
-  const shareToInstagram = () => {
+  const copyForPlatform = (platform: string) => {
     navigator.clipboard.writeText(shareUrl);
-    toast({ title: "Enlace copiado", description: "Pega el enlace en Instagram" });
+    toast({ title: "Enlace copiado", description: `Pega este enlace en tu publicación de ${platform}` });
   };
 
   if (isLoading) return <div className="container py-8"><div className="animate-pulse h-96 bg-muted rounded-lg" /></div>;
@@ -53,10 +49,10 @@ export default function BundleDetail() {
       <p className="text-muted-foreground mt-2">{bundle.description}</p>
 
       <div className="flex gap-2 mt-4">
-        <Button variant="outline" size="sm" onClick={shareToFacebook}>
+        <Button variant="outline" size="sm" onClick={() => copyForPlatform("Facebook")}>
           <Share2 className="h-4 w-4 mr-1" /> Facebook
         </Button>
-        <Button variant="outline" size="sm" onClick={shareToInstagram}>
+        <Button variant="outline" size="sm" onClick={() => copyForPlatform("Instagram")}>
           <Share2 className="h-4 w-4 mr-1" /> Instagram
         </Button>
       </div>
