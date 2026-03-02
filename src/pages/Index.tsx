@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { BrandName } from "@/components/BrandName";
 import { ShoppingCart, Heart, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function Index() {
+  const { t } = useLanguage();
+
   const { data: medicalArticles } = useQuery({
     queryKey: ["medical-articles"],
     queryFn: async () => {
@@ -43,23 +46,23 @@ export default function Index() {
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/30 py-20 md:py-32">
         <div className="container relative z-10 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm text-primary font-medium mb-6">
-            <Heart className="h-4 w-4" /> Tu salud es nuestra prioridad
+            <Heart className="h-4 w-4" /> {t("hero.badge")}
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
             <BrandName className="text-primary" />
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            Productos médicos de calidad para tu bienestar. Descubre nuestro catálogo completo con envío directo a tu ubicación.
+            {t("hero.subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/catalog">
               <Button size="lg" className="gap-2">
-                <ShoppingCart className="h-5 w-5" /> Ver Catálogo
+                <ShoppingCart className="h-5 w-5" /> {t("hero.cta_catalog")}
               </Button>
             </Link>
             <Link to="/support">
               <Button variant="outline" size="lg">
-                Contactar Soporte
+                {t("hero.cta_support")}
               </Button>
             </Link>
           </div>
@@ -71,7 +74,7 @@ export default function Index() {
       {medicalArticles && medicalArticles.length > 0 && (
         <section className="py-12 bg-card">
           <div className="container">
-            <h2 className="text-2xl font-bold mb-6">Artículos Médicos</h2>
+            <h2 className="text-2xl font-bold mb-6">{t("index.medical_articles")}</h2>
             <div
               ref={scrollRef}
               className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x"
@@ -88,7 +91,7 @@ export default function Index() {
                       {article.image_url ? (
                         <img src={article.image_url} alt={article.name} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform" />
                       ) : (
-                        <span className="text-muted-foreground text-sm">Sin imagen</span>
+                        <span className="text-muted-foreground text-sm">{t("index.no_image")}</span>
                       )}
                     </div>
                     <div className="p-3">
@@ -107,14 +110,14 @@ export default function Index() {
       <section className="py-16 text-center">
         <div className="container">
           <h2 className="text-3xl font-bold mb-4">
-            Empieza a cuidar tu salud hoy
+            {t("index.cta_title")}
           </h2>
           <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-            Regístrate y accede a todos nuestros productos con precios especiales y envío a domicilio.
+            {t("index.cta_subtitle")}
           </p>
           <Link to="/auth">
             <Button size="lg" className="gap-2">
-              Crear Cuenta <ArrowRight className="h-4 w-4" />
+              {t("index.cta_button")} <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>

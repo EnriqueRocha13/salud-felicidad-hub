@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Eye } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { BrandName } from "@/components/BrandName";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function Catalog() {
   const { addItem } = useCart();
+  const { t } = useLanguage();
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
@@ -38,9 +40,9 @@ export default function Catalog() {
   return (
     <div className="container py-8">
       <h1 className="text-3xl font-bold mb-2">
-        Catálogo — <BrandName className="text-primary" />
+        {t("catalog.title")} — <BrandName className="text-primary" />
       </h1>
-      <p className="text-muted-foreground mb-8">Explora nuestros productos de salud</p>
+      <p className="text-muted-foreground mb-8">{t("catalog.subtitle")}</p>
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -63,7 +65,7 @@ export default function Catalog() {
                   {product.image_url ? (
                     <img src={product.image_url} alt={product.name} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform" />
                   ) : (
-                    <span className="text-muted-foreground text-sm">Sin imagen</span>
+                    <span className="text-muted-foreground text-sm">{t("catalog.no_image")}</span>
                   )}
                 </div>
                 <CardContent className="p-4">
@@ -73,7 +75,7 @@ export default function Catalog() {
                   <div className="flex gap-2 mt-3">
                     <Link to={`/product/${product.id}`} className="flex-1">
                       <Button variant="outline" size="sm" className="w-full">
-                        <Eye className="h-4 w-4 mr-1" /> Ver
+                        <Eye className="h-4 w-4 mr-1" /> {t("catalog.view")}
                       </Button>
                     </Link>
                     <Button
@@ -81,7 +83,7 @@ export default function Catalog() {
                       className="flex-1"
                       onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image_url: product.image_url })}
                     >
-                      <ShoppingCart className="h-4 w-4 mr-1" /> Agregar
+                      <ShoppingCart className="h-4 w-4 mr-1" /> {t("catalog.add")}
                     </Button>
                   </div>
                 </CardContent>
@@ -91,7 +93,7 @@ export default function Catalog() {
 
           {bundles && bundles.length > 0 && (
             <>
-              <h2 className="text-2xl font-bold mt-12 mb-6">Conjuntos</h2>
+              <h2 className="text-2xl font-bold mt-12 mb-6">{t("catalog.bundles")}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {bundles.map((bundle) => (
                   <Link to={`/bundle/${bundle.id}`} key={bundle.id}>
@@ -101,7 +103,7 @@ export default function Catalog() {
                           const imgs = (bundle as any).bundle_products
                             ?.map((bp: any) => bp.products)
                             .filter((p: any) => p?.image_url) || [];
-                          if (imgs.length === 0) return <div className="w-full h-full flex items-center justify-center bg-muted rounded"><span className="text-muted-foreground text-sm">Sin productos</span></div>;
+                          if (imgs.length === 0) return <div className="w-full h-full flex items-center justify-center bg-muted rounded"><span className="text-muted-foreground text-sm">{t("catalog.no_products")}</span></div>;
                           const count = Math.min(imgs.length, 4);
                           return (
                             <div className={`grid gap-1 w-full h-full ${count === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>

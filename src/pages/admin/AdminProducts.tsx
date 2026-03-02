@@ -3,16 +3,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Plus, Trash2, Edit, Share2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function AdminProducts() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -31,7 +33,6 @@ export default function AdminProducts() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       let image_url: string | undefined;
-
       if (imageFile) {
         const ext = imageFile.name.split(".").pop();
         const path = `${Date.now()}.${ext}`;
@@ -40,86 +41,54 @@ export default function AdminProducts() {
         const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
         image_url = urlData.publicUrl;
       }
-
-      const payload = {
-        name: form.name,
-        description: form.description,
-        price: parseFloat(form.price) || 0,
-        is_medical_article: form.is_medical_article,
-        ...(image_url ? { image_url } : {}),
-      };
-
-      if (editId) {
-        const { error } = await supabase.from("products").update(payload).eq("id", editId);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("products").insert(payload);
-        if (error) throw error;
-      }
+      const payload = { name: form.name, description: form.description, price: parseFloat(form.price) || 0, is_medical_article: form.is_medical_article, ...(image_url ? { image_url } : {}) };
+      if (editId) { const { error } = await supabase.from("products").update(payload).eq("id", editId); if (error) throw error; }
+      else { const { error } = await supabase.from("products").insert(payload); if (error) throw error; }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
-      toast({ title: editId ? "Producto actualizado" : "Producto creado" });
-      resetForm();
-    },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-products"] }); toast({ title: editId ? t("admin.product_updated") : t("admin.product_created") }); resetForm(); },
+    onError: (e: any) => toast({ title: t("error"), description: e.message, variant: "destructive" }),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("products").delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
-      toast({ title: "Producto eliminado" });
-    },
+    mutationFn: async (id: string) => { const { error } = await supabase.from("products").delete().eq("id", id); if (error) throw error; },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-products"] }); toast({ title: t("admin.product_deleted") }); },
   });
 
-  const resetForm = () => {
-    setForm({ name: "", description: "", price: "", is_medical_article: false });
-    setImageFile(null);
-    setEditId(null);
-    setOpen(false);
-  };
+  const resetForm = () => { setForm({ name: "", description: "", price: "", is_medical_article: false }); setImageFile(null); setEditId(null); setOpen(false); };
 
   const startEdit = (product: any) => {
     setForm({ name: product.name, description: product.description || "", price: String(product.price), is_medical_article: product.is_medical_article });
-    setEditId(product.id);
-    setOpen(true);
+    setEditId(product.id); setOpen(true);
   };
 
-  const copyLink = (id: string) => {
-    navigator.clipboard.writeText(`${window.location.origin}/product/${id}`);
-    toast({ title: "Enlace copiado" });
-  };
+  const copyLink = (id: string) => { navigator.clipboard.writeText(`${window.location.origin}/product/${id}`); toast({ title: t("admin.link_copied") }); };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Productos</h1>
+        <h1 className="text-2xl font-bold">{t("admin.products")}</h1>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-1" /> Agregar Producto</Button>
+            <Button><Plus className="h-4 w-4 mr-1" /> {t("admin.add_product")}</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editId ? "Editar Producto" : "Nuevo Producto"}</DialogTitle>
+              <DialogTitle>{editId ? t("admin.edit_product") : t("admin.new_product")}</DialogTitle>
             </DialogHeader>
             <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(); }} className="space-y-4">
-              <Input placeholder="Nombre" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-              <Textarea placeholder="Descripción" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-              <Input type="number" step="0.01" placeholder="Precio" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
+              <Input placeholder={t("admin.product_name")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+              <Textarea placeholder={t("admin.product_desc")} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+              <Input type="number" step="0.01" placeholder={t("admin.product_price")} value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
               <div>
-                <Label>Imagen del producto</Label>
+                <Label>{t("admin.product_image")}</Label>
                 <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} className="mt-1" />
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={form.is_medical_article} onCheckedChange={(v) => setForm({ ...form, is_medical_article: v })} />
-                <Label>Artículo médico (aparece en carrusel)</Label>
+                <Label>{t("admin.medical_article")}</Label>
               </div>
               <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
-                {saveMutation.isPending ? "Guardando..." : "Guardar"}
+                {saveMutation.isPending ? t("admin.saving") : t("admin.save")}
               </Button>
             </form>
           </DialogContent>
@@ -138,7 +107,7 @@ export default function AdminProducts() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold">{product.name}</h3>
-                  <p className="text-sm text-muted-foreground">${product.price} {product.is_medical_article && "· Artículo médico"}</p>
+                  <p className="text-sm text-muted-foreground">${product.price} {product.is_medical_article && `· ${t("admin.medical_article")}`}</p>
                 </div>
                 <div className="flex gap-1">
                   <Button variant="ghost" size="icon" onClick={() => copyLink(product.id)}><Share2 className="h-4 w-4" /></Button>
@@ -148,7 +117,7 @@ export default function AdminProducts() {
               </CardContent>
             </Card>
           ))}
-          {products?.length === 0 && <p className="text-center text-muted-foreground py-8">No hay productos aún</p>}
+          {products?.length === 0 && <p className="text-center text-muted-foreground py-8">{t("admin.no_products")}</p>}
         </div>
       )}
     </div>
