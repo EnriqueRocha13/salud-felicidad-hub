@@ -49,11 +49,8 @@ export default function BundleDetail() {
       <p className="text-muted-foreground mt-2">{bundle.description}</p>
 
       <div className="flex gap-2 mt-4">
-        <Button variant="outline" size="sm" onClick={() => copyForPlatform("Facebook")}>
-          <Share2 className="h-4 w-4 mr-1" /> Facebook
-        </Button>
-        <Button variant="outline" size="sm" onClick={() => copyForPlatform("Instagram")}>
-          <Share2 className="h-4 w-4 mr-1" /> Instagram
+        <Button variant="outline" size="sm" onClick={() => copyForPlatform("Facebook o Instagram")}>
+          <Share2 className="h-4 w-4 mr-1" /> Copiar enlace para compartir
         </Button>
       </div>
 
