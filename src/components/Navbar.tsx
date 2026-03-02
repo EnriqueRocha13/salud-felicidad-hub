@@ -2,14 +2,17 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandName } from "@/components/BrandName";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 export function Navbar() {
   const { user, signOut } = useAuth();
   const { itemCount } = useCart();
+  const { t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -22,11 +25,12 @@ export function Navbar() {
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-6">
           <Link to="/catalog" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            Catálogo
+            {t("nav.catalog")}
           </Link>
           <Link to="/support" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            Soporte
+            {t("nav.support")}
           </Link>
+          <LanguageSwitcher />
           {user ? (
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground">{user.email}</span>
@@ -37,7 +41,7 @@ export function Navbar() {
           ) : (
             <Link to="/auth">
               <Button variant="outline" size="sm">
-                <User className="h-4 w-4 mr-1" /> Iniciar Sesión
+                <User className="h-4 w-4 mr-1" /> {t("nav.login")}
               </Button>
             </Link>
           )}
@@ -62,19 +66,20 @@ export function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t bg-card p-4 space-y-3">
-          <Link to="/catalog" className="block text-sm font-medium" onClick={() => setMobileOpen(false)}>Catálogo</Link>
-          <Link to="/support" className="block text-sm font-medium" onClick={() => setMobileOpen(false)}>Soporte</Link>
+          <Link to="/catalog" className="block text-sm font-medium" onClick={() => setMobileOpen(false)}>{t("nav.catalog")}</Link>
+          <Link to="/support" className="block text-sm font-medium" onClick={() => setMobileOpen(false)}>{t("nav.support")}</Link>
+          <LanguageSwitcher />
           {user ? (
             <Button variant="ghost" size="sm" onClick={() => { signOut(); setMobileOpen(false); }}>
-              <LogOut className="h-4 w-4 mr-1" /> Cerrar Sesión
+              <LogOut className="h-4 w-4 mr-1" /> {t("nav.logout")}
             </Button>
           ) : (
             <Link to="/auth" onClick={() => setMobileOpen(false)}>
-              <Button variant="outline" size="sm" className="w-full"><User className="h-4 w-4 mr-1" /> Iniciar Sesión</Button>
+              <Button variant="outline" size="sm" className="w-full"><User className="h-4 w-4 mr-1" /> {t("nav.login")}</Button>
             </Link>
           )}
           <Link to="/cart" className="flex items-center gap-2 text-sm font-medium" onClick={() => setMobileOpen(false)}>
-            <ShoppingCart className="h-4 w-4" /> Carrito {itemCount > 0 && `(${itemCount})`}
+            <ShoppingCart className="h-4 w-4" /> {t("nav.cart")} {itemCount > 0 && `(${itemCount})`}
           </Link>
         </div>
       )}

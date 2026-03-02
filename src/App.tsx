@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { LanguageProvider } from "@/i18n/LanguageContext";
 import { PublicLayout } from "@/components/PublicLayout";
 import { AdminGuard } from "@/components/AdminGuard";
 import Index from "./pages/Index";
@@ -33,38 +34,40 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <CartProvider>
-            <Routes>
-              {/* Public routes */}
-              <Route element={<PublicLayout />}>
-                <Route path="/" element={<Index />} />
-                <Route path="/catalog" element={<Catalog />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/bundle/:id" element={<BundleDetail />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/support" element={<Support />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/payment-success" element={<PaymentSuccess />} />
-              </Route>
+        <LanguageProvider>
+          <AuthProvider>
+            <CartProvider>
+              <Routes>
+                {/* Public routes */}
+                <Route element={<PublicLayout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/catalog" element={<Catalog />} />
+                  <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/bundle/:id" element={<BundleDetail />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/support" element={<Support />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/payment-success" element={<PaymentSuccess />} />
+                </Route>
 
-              {/* Admin login (no layout) */}
-              <Route path="/admin-login" element={<AdminLogin />} />
+                {/* Admin login (no layout) */}
+                <Route path="/admin-login" element={<AdminLogin />} />
 
-              {/* Admin routes */}
-              <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
-                <Route index element={<AdminProducts />} />
-                <Route path="bundles" element={<AdminBundles />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="orders" element={<AdminOrders />} />
-                <Route path="chat" element={<AdminChat />} />
-              </Route>
+                {/* Admin routes */}
+                <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
+                  <Route index element={<AdminProducts />} />
+                  <Route path="bundles" element={<AdminBundles />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="orders" element={<AdminOrders />} />
+                  <Route path="chat" element={<AdminChat />} />
+                </Route>
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </CartProvider>
-        </AuthProvider>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

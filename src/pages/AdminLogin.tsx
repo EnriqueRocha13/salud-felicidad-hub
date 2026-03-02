@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BrandName } from "@/components/BrandName";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminLogin() {
@@ -13,27 +14,20 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [waitingForAdmin, setWaitingForAdmin] = useState(false);
   const { signIn, user, isAdmin } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Once isAdmin becomes true after login, navigate to admin
   useEffect(() => {
-    if (waitingForAdmin && user && isAdmin) {
-      navigate("/admin");
-    }
+    if (waitingForAdmin && user && isAdmin) navigate("/admin");
   }, [waitingForAdmin, user, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     const { error } = await signIn(email, password);
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-      setLoading(false);
-    } else {
-      // Wait for isAdmin to be set by AuthContext
-      setWaitingForAdmin(true);
-    }
+    if (error) { toast({ title: t("error"), description: error.message, variant: "destructive" }); setLoading(false); }
+    else setWaitingForAdmin(true);
   };
 
   return (
@@ -41,14 +35,14 @@ export default function AdminLogin() {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <BrandName className="text-xl text-primary mb-2 block" />
-          <CardTitle className="text-lg">Acceso Administrador</CardTitle>
+          <CardTitle className="text-lg">{t("admin.access")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input type="email" placeholder="Correo del administrador" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <Input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <Input type="email" placeholder={t("admin.admin_email")} value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <Input type="password" placeholder={t("admin.password")} value={password} onChange={(e) => setPassword(e.target.value)} required />
             <Button type="submit" className="w-full" disabled={loading || waitingForAdmin}>
-              {loading || waitingForAdmin ? "Verificando..." : "Acceder"}
+              {loading || waitingForAdmin ? t("admin.verifying") : t("admin.enter")}
             </Button>
           </form>
         </CardContent>

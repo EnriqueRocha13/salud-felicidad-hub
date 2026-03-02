@@ -1,14 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { Minus, Plus, Trash2, ShoppingCart } from "lucide-react";
 import { BrandName } from "@/components/BrandName";
 
 export default function Cart() {
   const { items, removeItem, updateQuantity, total, clearCart } = useCart();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
@@ -23,9 +25,9 @@ export default function Cart() {
     return (
       <div className="container py-16 text-center">
         <ShoppingCart className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Tu carrito está vacío</h2>
-        <p className="text-muted-foreground mb-4">Explora nuestro catálogo y agrega productos</p>
-        <Button onClick={() => navigate("/catalog")}>Ver Catálogo</Button>
+        <h2 className="text-2xl font-bold mb-2">{t("cart.empty_title")}</h2>
+        <p className="text-muted-foreground mb-4">{t("cart.empty_subtitle")}</p>
+        <Button onClick={() => navigate("/catalog")}>{t("cart.view_catalog")}</Button>
       </div>
     );
   }
@@ -33,7 +35,7 @@ export default function Cart() {
   return (
     <div className="container py-8 max-w-2xl">
       <BrandName className="text-sm text-primary mb-2 block" />
-      <h1 className="text-3xl font-bold mb-6">Carrito</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("cart.title")}</h1>
       <div className="space-y-3">
         {items.map((item) => (
           <Card key={item.id}>
@@ -64,14 +66,14 @@ export default function Cart() {
       </div>
       <Card className="mt-6">
         <CardContent className="p-4 flex items-center justify-between">
-          <span className="text-lg font-semibold">Total:</span>
+          <span className="text-lg font-semibold">{t("cart.total")}</span>
           <span className="text-2xl font-bold text-primary">${total.toFixed(2)}</span>
         </CardContent>
       </Card>
       <div className="flex gap-3 mt-4">
-        <Button variant="outline" onClick={clearCart}>Vaciar Carrito</Button>
+        <Button variant="outline" onClick={clearCart}>{t("cart.clear")}</Button>
         <Button className="flex-1" size="lg" onClick={handleCheckout}>
-          Proceder al Pago
+          {t("cart.checkout")}
         </Button>
       </div>
     </div>
