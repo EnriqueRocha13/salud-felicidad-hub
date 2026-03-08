@@ -45,7 +45,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     "bundle.not_found": "Conjunto no encontrado",
     "bundle.copy_link": "Copiar enlace para compartir",
     "bundle.link_copied": "Enlace copiado",
-    "bundle.link_copied_desc": "Pega este enlace en tu publicación de Facebook o Instagram",
+    "bundle.link_copied_desc": "Pega este enlace como URL del botón de compra en Facebook o Instagram.",
     "bundle.products_title": "Productos del conjunto",
     "bundle.view": "Ver",
     "bundle.add": "Agregar",
