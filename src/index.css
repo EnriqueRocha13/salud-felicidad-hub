@@ -102,13 +102,7 @@ All colors MUST be HSL.
   }
 }
 
-@keyframes spin-slow {
+@keyframes splash-spin {
   from { transform: rotateY(0deg); }
   to { transform: rotateY(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 2s linear infinite;
-  perspective: 600px;
-  transform-style: preserve-3d;
 }
