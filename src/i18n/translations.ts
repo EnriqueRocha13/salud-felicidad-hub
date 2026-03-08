@@ -218,6 +218,10 @@ export const translations: Record<Lang, Record<string, string>> = {
     "product.add_to_cart": "Add to Cart",
     "product.buy_now": "Buy Now",
     "product.not_found": "Product not found",
+    "product.copy_link": "Copy Link",
+    "product.link_copied": "Link copied!",
+    "product.link_copied_desc": "Paste this link as the buy button URL on Facebook or Instagram.",
+    "product.share_hint": "💡 Use this link as the buy button URL on Facebook and Instagram.",
 
     // Bundle Detail
     "bundle.back": "Back",
