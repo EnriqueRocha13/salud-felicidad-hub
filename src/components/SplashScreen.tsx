@@ -12,24 +12,25 @@ function Heart() {
   });
 
   const heartShape = new THREE.Shape();
-  const x = 0, y = 0;
-  heartShape.moveTo(x, y + 0.5);
-  heartShape.bezierCurveTo(x, y + 0.5, x - 0.5, y, x - 0.5, y);
-  heartShape.bezierCurveTo(x - 0.5, y - 0.35, x, y - 0.6, x, y - 0.8);
-  heartShape.bezierCurveTo(x, y - 0.6, x + 0.5, y - 0.35, x + 0.5, y);
-  heartShape.bezierCurveTo(x + 0.5, y, x, y + 0.5, x, y + 0.5);
+  heartShape.moveTo(0, -2);
+  heartShape.bezierCurveTo(0, -2.4, -0.5, -2.8, -1, -2.8);
+  heartShape.bezierCurveTo(-2, -2.8, -2, -1.6, -2, -1.6);
+  heartShape.bezierCurveTo(-2, -0.6, -1, 0.4, 0, 1.2);
+  heartShape.bezierCurveTo(1, 0.4, 2, -0.6, 2, -1.6);
+  heartShape.bezierCurveTo(2, -1.6, 2, -2.8, 1, -2.8);
+  heartShape.bezierCurveTo(0.5, -2.8, 0, -2.4, 0, -2);
 
   const extrudeSettings = {
-    depth: 0.3,
+    depth: 0.6,
     bevelEnabled: true,
-    bevelSegments: 8,
+    bevelSegments: 12,
     steps: 2,
-    bevelSize: 0.08,
-    bevelThickness: 0.08,
+    bevelSize: 0.15,
+    bevelThickness: 0.15,
   };
 
   return (
-    <mesh ref={meshRef} scale={2.5} position={[0, 0.2, 0]}>
+    <mesh ref={meshRef} scale={0.7} position={[0, 0.5, 0]} rotation={[Math.PI, 0, 0]}>
       <extrudeGeometry args={[heartShape, extrudeSettings]} />
       <meshStandardMaterial color="#2ECC71" metalness={0.3} roughness={0.4} />
     </mesh>
@@ -49,14 +50,14 @@ export function SplashScreen({ onFinish }: { onFinish: () => void }) {
     <div
       className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background transition-opacity duration-500 ${fading ? "opacity-0" : "opacity-100"}`}
     >
-      <div className="w-48 h-48 mb-6">
-        <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
+      <div className="w-72 h-72 md:w-96 md:h-96 mb-6">
+        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
           <ambientLight intensity={0.6} />
           <directionalLight position={[2, 2, 5]} intensity={1} />
           <Heart />
         </Canvas>
       </div>
-      <h1 className="text-3xl md:text-4xl font-bold text-primary tracking-tight animate-fade-in">
+      <h1 className="text-3xl md:text-5xl font-bold text-primary tracking-tight animate-fade-in">
         Salud=Felicidad();
       </h1>
     </div>
