@@ -8,6 +8,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { BrandName } from "@/components/BrandName";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 export default function BundleDetail() {
   const { id } = useParams();
