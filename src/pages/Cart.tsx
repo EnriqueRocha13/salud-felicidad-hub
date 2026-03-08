@@ -39,27 +39,31 @@ export default function Cart() {
       <div className="space-y-3">
         {items.map((item) => (
           <Card key={item.id}>
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="h-16 w-16 bg-muted rounded flex-shrink-0 overflow-hidden">
-                {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold truncate">{item.name}</h3>
-                <p className="text-primary font-bold">${item.price}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
-                  <Minus className="h-3 w-3" />
-                </Button>
-                <span className="w-8 text-center font-medium">{item.quantity}</span>
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-                  <Plus className="h-3 w-3" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="h-14 w-14 sm:h-16 sm:w-16 bg-muted rounded flex-shrink-0 overflow-hidden">
+                  {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold truncate text-sm sm:text-base">{item.name}</h3>
+                  <p className="text-primary font-bold text-sm">${item.price}</p>
+                </div>
+                <Button variant="ghost" size="icon" className="text-destructive flex-shrink-0 h-8 w-8" onClick={() => removeItem(item.id)}>
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="font-bold w-20 text-right">${(item.price * item.quantity).toFixed(2)}</p>
-              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => removeItem(item.id)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center justify-between mt-3 pt-2 border-t">
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                  <span className="w-8 text-center font-medium">{item.quantity}</span>
+                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </div>
+                <p className="font-bold text-sm sm:text-base">${(item.price * item.quantity).toFixed(2)}</p>
+              </div>
             </CardContent>
           </Card>
         ))}
