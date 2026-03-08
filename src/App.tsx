@@ -39,6 +39,7 @@ const App = () => {
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
       <BrowserRouter>
         <LanguageProvider>
           <AuthProvider>
