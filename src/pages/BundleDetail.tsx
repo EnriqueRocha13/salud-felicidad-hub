@@ -30,8 +30,34 @@ export default function BundleDetail() {
     },
   });
 
+  // Update OG meta tags for social sharing
+  useEffect(() => {
+    if (!bundle) return;
+    const url = `${window.location.origin}/bundle/${bundle.id}`;
+    document.title = `${bundle.name} — Salud=Felicidad();`;
+
+    const setMeta = (property: string, content: string) => {
+      let el = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("property", property);
+        document.head.appendChild(el);
+      }
+      el.content = content;
+    };
+
+    setMeta("og:title", bundle.name);
+    setMeta("og:description", bundle.description || `Conjunto — Salud=Felicidad();`);
+    setMeta("og:url", url);
+    setMeta("og:type", "product");
+    if (bundle.image_url) setMeta("og:image", bundle.image_url);
+
+    return () => { document.title = "Salud=Felicidad();"; };
+  }, [bundle]);
+
   const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+    const url = `${window.location.origin}/bundle/${id}`;
+    navigator.clipboard.writeText(url);
     toast({ title: t("bundle.link_copied"), description: t("bundle.link_copied_desc") });
   };
 
