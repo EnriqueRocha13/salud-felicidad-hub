@@ -91,6 +91,9 @@ export const translations: Record<Lang, Record<string, string>> = {
     "auth.welcome": "¡Bienvenido!",
     "auth.register_success": "Registro exitoso",
     "auth.register_confirm": "Revisa tu correo para confirmar tu cuenta.",
+    "auth.or": "o",
+    "auth.google_signup": "Registrarse con Google",
+    "auth.google_login": "Iniciar sesión con Google",
 
     // Support
     "support.title": "Soporte",
