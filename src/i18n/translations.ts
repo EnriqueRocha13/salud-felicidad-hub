@@ -228,7 +228,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     "bundle.not_found": "Bundle not found",
     "bundle.copy_link": "Copy link to share",
     "bundle.link_copied": "Link copied",
-    "bundle.link_copied_desc": "Paste this link in your Facebook or Instagram post",
+    "bundle.link_copied_desc": "Paste this link as the buy button URL on Facebook or Instagram.",
     "bundle.products_title": "Bundle products",
     "bundle.view": "View",
     "bundle.add": "Add",
