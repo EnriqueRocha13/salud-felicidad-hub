@@ -136,6 +136,22 @@ function escapeHtml(text: string): string {
     .replace(/'/g, "&#039;");
 }
 
+const LEAF_PATH = "M50 88 C25 65, 2 45, 2 28 C2 14, 14 4, 27 4 C36 4, 44 10, 50 20 C56 10, 64 4, 73 4 C86 4, 98 14, 98 28 C98 45, 75 65, 50 88Z";
+
+function leaf(x: number, y: number, size: number): string {
+  const scale = size / 100;
+  return `<g transform="translate(${x},${y}) scale(${scale})"><path d="${LEAF_PATH}" fill="${BRAND_GREEN}" /></g>`;
+}
+
+function buildBrandSvg(): string {
+  return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="${BG_LIGHT}" />
+  ${leaf(510, 120, 180)}
+  <text x="600" y="420" font-family="Roboto, sans-serif" font-size="72" font-weight="bold" fill="${BRAND_GREEN}" text-anchor="middle">Salud=Felicidad();</text>
+  <text x="600" y="480" font-family="Roboto, sans-serif" font-size="30" fill="${TEXT_MUTED}" text-anchor="middle">Productos de salud y bienestar</text>
+</svg>`;
+}
+
 function buildShareSvg(product: {
   id: string;
   name: string;
@@ -159,7 +175,8 @@ function buildShareSvg(product: {
 
   return `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
   <rect width="1200" height="630" fill="${BG_LIGHT}" />
-  <text x="600" y="64" font-family="Roboto, sans-serif" font-size="52" font-weight="bold" fill="${BRAND_GREEN}" text-anchor="middle">${brand}</text>
+  ${leaf(300, 16, 60)}
+  <text x="376" y="66" font-family="Roboto, sans-serif" font-size="52" font-weight="bold" fill="${BRAND_GREEN}">${brand}</text>
   <rect x="${imgX - 8}" y="${imgY - 8}" width="${imgW + 16}" height="${imgH + 16}" rx="16" fill="#ffffff" stroke="#E2E8F0" stroke-width="2" />
   ${imageBlock}
   <text x="600" y="580" font-family="Roboto, sans-serif" font-size="36" font-weight="bold" fill="${TEXT_DARK}" text-anchor="middle">${title}</text>
@@ -191,11 +208,16 @@ async function handleImageRequest(req: Request): Promise<Response> {
 
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
-  if (!id) {
-    return new Response("Missing product id", { status: 400, headers: corsHeaders });
-  }
 
   try {
+    if (!id) {
+      const png = await renderPng(buildBrandSvg());
+      // deno-lint-ignore no-explicit-any
+      return new Response(png as any, {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "image/png", "Cache-Control": "public, max-age=3600" },
+      });
+    }
     const supabaseAdmin = getSupabaseAdmin();
     const product = await getProduct(supabaseAdmin, id);
     if (!product) {
