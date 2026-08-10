@@ -248,7 +248,8 @@ async function handleHtmlRequest(req: Request): Promise<Response> {
     }
 
     const redirectUrl = `${origin}/product/${product.id}`;
-    const imageUrl = `${url.origin}/functions/v1/share-product/image?id=${product.id}`;
+    const imageUrl = `https://${url.host}/functions/v1/share-product/image?id=${product.id}`;
+
     const title = `${product.name} — Salud=Felicidad();`;
     const rawDescription =
       product.description?.replace(/\s+/g, " ").trim() ||
