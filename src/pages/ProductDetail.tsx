@@ -6,6 +6,7 @@ import { ShoppingCart, ArrowLeft, Share2 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { ProductImageActions } from "@/components/ProductImageActions";
 import { BrandName } from "@/components/BrandName";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
@@ -114,7 +115,8 @@ export default function ProductDetail() {
         <ArrowLeft className="h-4 w-4 mr-1" /> {t("product.back")}
       </Button>
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-muted rounded-lg overflow-hidden flex items-center justify-center min-h-[300px]">
+        <div className="relative bg-muted rounded-lg overflow-hidden flex items-center justify-center min-h-[300px]">
+          <ProductImageActions productId={product.id} />
           {product.image_url ? (
             <img src={product.image_url} alt={product.name} className="w-full h-full object-contain max-h-[500px]" />
           ) : (

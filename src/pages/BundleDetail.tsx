@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Share2, ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { ProductImageActions } from "@/components/ProductImageActions";
 import { BrandName } from "@/components/BrandName";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
@@ -85,7 +86,8 @@ export default function BundleDetail() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product: any) => (
           <Card key={product.id} className="overflow-hidden">
-            <div className="h-48 bg-white flex items-center justify-center p-2">
+            <div className="relative h-48 bg-white flex items-center justify-center p-2">
+              <ProductImageActions productId={product.id} />
               {product.image_url ? (
                 <img src={product.image_url} alt={product.name} className="max-w-full max-h-full object-contain" />
               ) : (
