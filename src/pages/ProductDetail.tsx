@@ -61,22 +61,24 @@ export default function ProductDetail() {
       return raw.length > 160 ? raw.slice(0, 157) + "..." : raw;
     };
 
+    const shareImageUrl = getProductShareImageUrl(product.id);
+
     setMeta("og:title", product.name);
     setMeta("og:description", shareDescription(product.description, product.name, product.price));
     setMeta("og:url", url);
     setMeta("og:type", "product");
     setMeta("og:site_name", "Salud=Felicidad();");
-    if (product.image_url) {
-      setMeta("og:image", product.image_url);
-      setMeta("og:image:secure_url", product.image_url);
-    }
-    setMeta("product:price:amount", String(product.price));
-    setMeta("product:price:currency", "MXN");
+    setMeta("og:image", shareImageUrl);
+    setMeta("og:image:secure_url", shareImageUrl);
+    setMeta("og:image:type", "image/png");
+    setMeta("og:image:width", "1200");
+    setMeta("og:image:height", "630");
 
     setName("twitter:card", "summary_large_image");
     setName("twitter:title", product.name);
     setName("twitter:description", shareDescription(product.description, product.name, product.price));
-    if (product.image_url) setName("twitter:image", product.image_url);
+    setName("twitter:image", shareImageUrl);
+
 
 
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
