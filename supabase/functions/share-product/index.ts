@@ -71,7 +71,9 @@ serve(async (req) => {
     const description = rawDescription.length > 160 ? rawDescription.slice(0, 157) + "..." : rawDescription;
     const imageUrl = product.image_url || `${origin}/placeholder.svg`;
     const price = Number(product.price).toFixed(2);
-
+    const ext = imageUrl.split("?")[0].split(".").pop()?.toLowerCase();
+    const imageType =
+      ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : ext === "svg" ? "image/svg+xml" : "image/jpeg";
 
     const html = `<!DOCTYPE html>
 <html lang="es">
@@ -86,8 +88,13 @@ serve(async (req) => {
   <meta property="og:description" content="${escapeHtml(description)}" />
   <meta property="og:url" content="${escapeHtml(redirectUrl)}" />
   <meta property="og:type" content="product" />
+  <meta property="og:locale" content="es_MX" />
   <meta property="og:image" content="${escapeHtml(imageUrl)}" />
   <meta property="og:image:secure_url" content="${escapeHtml(imageUrl)}" />
+  <meta property="og:image:type" content="${imageType}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="${escapeHtml(product.name)}" />
   <meta property="og:site_name" content="Salud=Felicidad();" />
 
   <meta property="product:price:amount" content="${escapeHtml(price)}" />
@@ -97,14 +104,41 @@ serve(async (req) => {
   <meta name="twitter:title" content="${escapeHtml(product.name)}" />
   <meta name="twitter:description" content="${escapeHtml(description)}" />
   <meta name="twitter:image" content="${escapeHtml(imageUrl)}" />
+  <meta name="twitter:image:alt" content="${escapeHtml(product.name)}" />
+
+  <!-- Microsoft Teams / Zoom / Skype thumbnail hints -->
+  <meta name="thumbnail" content="${escapeHtml(imageUrl)}" />
+  <meta name="msapplication-TileImage" content="${escapeHtml(imageUrl)}" />
+  <link rel="image_src" href="${escapeHtml(imageUrl)}" />
+  <meta itemprop="name" content="${escapeHtml(product.name)}" />
+  <meta itemprop="description" content="${escapeHtml(description)}" />
+  <meta itemprop="image" content="${escapeHtml(imageUrl)}" />
+  <script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description,
+    image: [imageUrl],
+    url: redirectUrl,
+    offers: {
+      "@type": "Offer",
+      price,
+      priceCurrency: "MXN",
+      availability: "https://schema.org/InStock",
+      url: redirectUrl,
+    },
+  })}</script>
+  <noscript><meta http-equiv="refresh" content="0;url=${escapeHtml(redirectUrl)}" /></noscript>
 </head>
 <body>
+  <a href="${escapeHtml(redirectUrl)}"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" width="320" /></a>
   <p>Redirigiendo a ${escapeHtml(product.name)}...</p>
   <script>
     window.location.replace("${escapeHtml(redirectUrl)}");
   </script>
 </body>
 </html>`;
+
 
     return new Response(html, {
       status: 200,
