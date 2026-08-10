@@ -27,7 +27,7 @@ export default function ProductDetail() {
     },
   });
 
-  // Update OG meta tags dynamically for social sharing
+  // Update OG and Twitter meta tags dynamically for social sharing
   useEffect(() => {
     if (!product) return;
     const url = `${window.location.origin}/product/${product.id}`;
@@ -43,22 +43,62 @@ export default function ProductDetail() {
       el.content = content;
     };
 
+    const setName = (name: string, content: string) => {
+      let el = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("name", name);
+        document.head.appendChild(el);
+      }
+      el.content = content;
+    };
+
+    const shareDescription = (text: string | null, name: string, price: number) => {
+      const raw = text?.trim() || `Compra ${name} por $${price} MXN`;
+      return raw.length > 160 ? raw.slice(0, 157) + "..." : raw;
+    };
+
     setMeta("og:title", product.name);
-    setMeta("og:description", product.description || `$${product.price} — Salud=Felicidad();`);
+    setMeta("og:description", shareDescription(product.description, product.name, product.price));
     setMeta("og:url", url);
     setMeta("og:type", "product");
-    if (product.image_url) setMeta("og:image", product.image_url);
+    setMeta("og:site_name", "Salud=Felicidad();");
+    if (product.image_url) {
+      setMeta("og:image", product.image_url);
+      setMeta("og:image:secure_url", product.image_url);
+    }
     setMeta("product:price:amount", String(product.price));
-    setMeta("product:price:currency", "USD");
+    setMeta("product:price:currency", "MXN");
 
-    return () => { document.title = "Salud=Felicidad();"; };
+    setName("twitter:card", "summary_large_image");
+    setName("twitter:title", product.name);
+    setName("twitter:description", shareDescription(product.description, product.name, product.price));
+    if (product.image_url) setName("twitter:image", product.image_url);
+
+
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.href = url;
+
+    return () => {
+      document.title = "Salud=Felicidad();";
+    };
   }, [product]);
 
+  const shareProductUrl = product
+    ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-product?id=${product.id}&origin=${encodeURIComponent(window.location.origin)}`
+    : "";
+
   const copyLink = () => {
-    const url = `${window.location.origin}/product/${id}`;
-    navigator.clipboard.writeText(url);
+    if (!shareProductUrl) return;
+    navigator.clipboard.writeText(shareProductUrl);
     toast({ title: t("product.link_copied"), description: t("product.link_copied_desc") });
   };
+
 
   const handleBuy = () => {
     if (!user) { navigate("/auth", { state: { from: `/product/${id}` } }); return; }
