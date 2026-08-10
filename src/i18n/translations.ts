@@ -21,6 +21,9 @@ export const translations: Record<Lang, Record<string, string>> = {
     "index.cta_button": "Crear Cuenta",
 
     // Catalog
+    "actions.more": "Más opciones",
+    "actions.view": "Ver",
+    "actions.share": "Compartir",
     "catalog.title": "Catálogo",
     "catalog.subtitle": "Explora nuestros productos de salud",
     "catalog.no_image": "Sin imagen",
@@ -208,6 +211,9 @@ export const translations: Record<Lang, Record<string, string>> = {
     "index.cta_button": "Create Account",
 
     // Catalog
+    "actions.more": "More options",
+    "actions.view": "View",
+    "actions.share": "Share",
     "catalog.title": "Catalog",
     "catalog.subtitle": "Explore our health products",
     "catalog.no_image": "No image",
