@@ -190,7 +190,8 @@ async function handleImageRequest(req: Request): Promise<Response> {
     const svg = buildShareSvg(product, imageDataUri);
     const png = await renderPng(svg);
 
-    return new Response(png.buffer, {
+    // deno-lint-ignore no-explicit-any
+    return new Response(png as any, {
       status: 200,
       headers: {
         ...corsHeaders,
@@ -198,6 +199,7 @@ async function handleImageRequest(req: Request): Promise<Response> {
         "Cache-Control": "public, max-age=300",
       },
     });
+
 
   } catch (err) {
     console.error("Share image error:", err);
