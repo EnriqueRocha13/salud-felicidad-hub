@@ -94,9 +94,8 @@ export default function ProductDetail() {
     };
   }, [product]);
 
-  const shareProductUrl = product
-    ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-product?id=${product.id}&origin=${encodeURIComponent(window.location.origin)}`
-    : "";
+  const shareProductUrl = product ? getProductShareUrl(product.id) : "";
+
 
   const copyLink = () => {
     if (!shareProductUrl) return;
