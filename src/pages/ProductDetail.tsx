@@ -10,6 +10,8 @@ import { ProductImageActions } from "@/components/ProductImageActions";
 import { BrandName } from "@/components/BrandName";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
+import { getProductShareImageUrl, getProductShareUrl } from "@/lib/share";
+
 
 export default function ProductDetail() {
   const { id } = useParams();
