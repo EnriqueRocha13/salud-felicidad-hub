@@ -190,7 +190,7 @@ async function handleImageRequest(req: Request): Promise<Response> {
     const svg = buildShareSvg(product, imageDataUri);
     const png = await renderPng(svg);
 
-    return new Response(png, {
+    return new Response(png.buffer, {
       status: 200,
       headers: {
         ...corsHeaders,
@@ -198,6 +198,7 @@ async function handleImageRequest(req: Request): Promise<Response> {
         "Cache-Control": "public, max-age=300",
       },
     });
+
   } catch (err) {
     console.error("Share image error:", err);
     return new Response("Internal error", { status: 500, headers: corsHeaders });
