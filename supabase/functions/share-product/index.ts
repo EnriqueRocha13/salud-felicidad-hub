@@ -66,7 +66,7 @@ serve(async (req) => {
     const redirectUrl = `${origin}/product/${product.id}`;
     const title = `${product.name} — Salud=Felicidad();`;
     const rawDescription =
-      product.description?.trim() ||
+      product.description?.replace(/\s+/g, " ").trim() ||
       `Compra ${product.name} por $${Number(product.price).toFixed(2)} MXN en Salud=Felicidad();`;
     const description = rawDescription.length > 160 ? rawDescription.slice(0, 157) + "..." : rawDescription;
     const imageUrl = product.image_url || `${origin}/placeholder.svg`;
