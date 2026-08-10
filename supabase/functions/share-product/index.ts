@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { Resvg, initWasm } from "npm:@resvg/resvg-wasm@2.6.0";
+import { RESVG_WASM_BASE64, ROBOTO_BOLD_BASE64, decodeBase64 } from "./assets.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,14 +15,25 @@ const BG_LIGHT = "#F8FAFC";
 const TEXT_DARK = "#1E293B";
 const TEXT_MUTED = "#64748B";
 
+const FONT_PATH = "/tmp/roboto-bold.ttf";
+
 let wasmInitialized = false;
 
 async function ensureWasm() {
   if (wasmInitialized) return;
-  const wasm = await Deno.readFile("./resvg.wasm");
-  await initWasm(wasm);
+  await initWasm(decodeBase64(RESVG_WASM_BASE64));
   wasmInitialized = true;
 }
+
+async function ensureFont() {
+  try {
+    await Deno.stat(FONT_PATH);
+  } catch {
+    await Deno.writeFile(FONT_PATH, decodeBase64(ROBOTO_BOLD_BASE64));
+  }
+  return FONT_PATH;
+}
+
 
 function isAllowedOrigin(origin: string): boolean {
   if (!origin) return false;
