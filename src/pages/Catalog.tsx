@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Eye } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { ProductImageActions } from "@/components/ProductImageActions";
 import { BrandName } from "@/components/BrandName";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -61,7 +62,8 @@ export default function Catalog() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {products?.map((product) => (
               <Card key={product.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
-                <div className="h-56 bg-white flex items-center justify-center overflow-hidden p-2">
+                <div className="relative h-56 bg-white flex items-center justify-center overflow-hidden p-2">
+                  <ProductImageActions productId={product.id} />
                   {product.image_url ? (
                     <img src={product.image_url} alt={product.name} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform" />
                   ) : (

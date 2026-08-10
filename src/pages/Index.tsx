@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ProductImageActions } from "@/components/ProductImageActions";
 import { BrandName } from "@/components/BrandName";
 import { ShoppingCart, Heart, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -87,7 +88,8 @@ export default function Index() {
                   className="flex-shrink-0 w-64 snap-start group"
                 >
                   <div className="rounded-lg overflow-hidden border bg-background hover:shadow-lg transition-shadow">
-                    <div className="h-48 bg-white flex items-center justify-center overflow-hidden p-2">
+                    <div className="relative h-48 bg-white flex items-center justify-center overflow-hidden p-2">
+                      <ProductImageActions productId={article.id} />
                       {article.image_url ? (
                         <img src={article.image_url} alt={article.name} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform" />
                       ) : (
