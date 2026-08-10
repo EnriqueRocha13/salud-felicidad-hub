@@ -38,7 +38,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     "product.copy_link": "Copiar Enlace",
     "product.link_copied": "¡Enlace copiado!",
     "product.link_copied_desc": "Pega este enlace en Facebook o Instagram como botón de compra.",
-    "product.share_hint": "💡 Usa este enlace como URL del botón de compra en Facebook e Instagram.",
+    "product.share_hint": "💡 Este enlace mostrará la imagen del producto al compartirlo en Facebook e Instagram.",
 
     // Bundle Detail
     "bundle.back": "Volver",
@@ -224,7 +224,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     "product.copy_link": "Copy Link",
     "product.link_copied": "Link copied!",
     "product.link_copied_desc": "Paste this link as the buy button URL on Facebook or Instagram.",
-    "product.share_hint": "💡 Use this link as the buy button URL on Facebook and Instagram.",
+    "product.share_hint": "💡 This link will show the product image when shared on Facebook and Instagram.",
 
     // Bundle Detail
     "bundle.back": "Back",
