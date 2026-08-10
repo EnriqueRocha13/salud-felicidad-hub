@@ -169,16 +169,18 @@ function buildShareSvg(product: {
 
 async function renderPng(svg: string): Promise<Uint8Array> {
   await ensureWasm();
+  const fontPath = await ensureFont();
   const resvg = new Resvg(svg, {
     background: BG_LIGHT,
     font: {
-      fontFiles: ["./fonts/Roboto-Bold.ttf"],
+      fontFiles: [fontPath],
       defaultFontFamily: "Roboto",
     },
   });
   const rendered = resvg.render();
   return rendered.asPng();
 }
+
 
 async function handleImageRequest(req: Request): Promise<Response> {
   if (req.method === "OPTIONS") {
