@@ -5,9 +5,13 @@ export function getProductShareUrl(productId: string) {
   return `${base}/functions/v1/share-product?id=${productId}&origin=${encodeURIComponent(origin)}`;
 }
 
-/** Builds the dynamic share image URL for a product. */
-export function getProductShareImageUrl(productId: string) {
-  const base = import.meta.env.VITE_SUPABASE_URL;
-  return `${base}/functions/v1/share-product/image?id=${productId}`;
+/** Imagen de marca usada como miniatura en todas las redes (Teams, Zoom, WhatsApp, etc.). */
+export const BRAND_SHARE_IMAGE_URL =
+  "https://uvnjmrmwwliqxchtazjw.supabase.co/storage/v1/object/public/product-images/share%2Fshare-brand-v1.png";
+
+/** Builds the share image URL for a product (marca Salud=Felicidad();). */
+export function getProductShareImageUrl(_productId?: string) {
+  return BRAND_SHARE_IMAGE_URL;
 }
+
 
