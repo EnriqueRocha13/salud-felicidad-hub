@@ -7,7 +7,7 @@ export function getProductShareUrl(productId: string) {
 
 /** Imagen de marca usada como miniatura en todas las redes (Teams, Zoom, WhatsApp, etc.). */
 export const BRAND_SHARE_IMAGE_URL =
-  "https://saludfelicidad.store/share-brand.png";
+  "https://saludfelicidad.store/share-brand.png?v=6";
 
 /** Builds the share image URL for a product (marca Salud=Felicidad();). */
 export function getProductShareImageUrl(_productId?: string) {
