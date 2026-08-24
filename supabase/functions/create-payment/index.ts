@@ -124,9 +124,7 @@ serve(async (req) => {
     }
 
     // Recompute authoritative amounts stored on the order
-    await admin
-      .from("order_items")
-      .upsert([], { onConflict: "id" }); // no-op keeps typing simple
+
 
     for (const item of orderItems) {
       const product = productMap.get(item.product_id as string)!;
