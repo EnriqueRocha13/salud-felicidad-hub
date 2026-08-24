@@ -10,6 +10,10 @@ const corsHeaders = {
 
 const DEFAULT_ORIGIN = "https://saludfelicidad.store";
 
+const BRAND_SHARE_IMAGE_URL =
+  "https://uvnjmrmwwliqxchtazjw.supabase.co/storage/v1/object/public/product-images/share%2Fshare-brand-v1.png";
+
+
 const BRAND_GREEN = "#2ECC71";
 const BG_LIGHT = "#F8FAFC";
 const TEXT_DARK = "#1E293B";
@@ -270,7 +274,7 @@ async function handleHtmlRequest(req: Request): Promise<Response> {
     }
 
     const redirectUrl = `${origin}/product/${product.id}`;
-    const imageUrl = `https://${url.host}/functions/v1/share-product/image?id=${product.id}`;
+    const imageUrl = BRAND_SHARE_IMAGE_URL;
 
     const title = `${product.name} — Salud=Felicidad();`;
     const rawDescription =
