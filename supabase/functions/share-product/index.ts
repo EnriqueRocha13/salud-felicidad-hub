@@ -11,7 +11,7 @@ const corsHeaders = {
 const DEFAULT_ORIGIN = "https://saludfelicidad.store";
 
 const BRAND_SHARE_IMAGE_URL =
-  "https://uvnjmrmwwliqxchtazjw.supabase.co/storage/v1/object/public/product-images/share%2Fshare-brand-v1.png";
+  "https://uvnjmrmwwliqxchtazjw.supabase.co/storage/v1/object/public/product-images/share%2Fshare-brand-v2.png";
 
 
 const BRAND_GREEN = "#2ECC71";
