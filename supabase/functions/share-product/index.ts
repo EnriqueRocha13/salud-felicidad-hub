@@ -270,7 +270,7 @@ async function handleHtmlRequest(req: Request): Promise<Response> {
     }
 
     const redirectUrl = `${origin}/product/${product.id}`;
-    const imageUrl = `https://${url.host}/functions/v1/share-product/image?id=${product.id}`;
+    const imageUrl = BRAND_SHARE_IMAGE_URL;
 
     const title = `${product.name} — Salud=Felicidad();`;
     const rawDescription =
