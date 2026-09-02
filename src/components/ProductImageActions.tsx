@@ -1,4 +1,4 @@
-import { MoreVertical, Eye, Share2 } from "lucide-react";
+import { MoreVertical, Eye, Share2, Linkedin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -44,6 +44,16 @@ export function ProductImageActions({ productId, className }: ProductImageAction
     }
   };
 
+  const shareLinkedIn = (e: React.MouseEvent) => {
+    stop(e);
+    const url = getProductShareUrl(productId);
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      "linkedin-share",
+      "width=600,height=600,noopener,noreferrer"
+    );
+  };
+
   return (
     <div className={`absolute top-2 right-2 z-10 ${className ?? ""}`}>
       <DropdownMenu>
@@ -68,6 +78,9 @@ export function ProductImageActions({ productId, className }: ProductImageAction
           </DropdownMenuItem>
           <DropdownMenuItem onClick={(e) => share(e as unknown as React.MouseEvent)}>
             <Share2 className="h-4 w-4 mr-2" /> {t("actions.share")}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={(e) => shareLinkedIn(e as unknown as React.MouseEvent)}>
+            <Linkedin className="h-4 w-4 mr-2" /> {t("actions.share_linkedin")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
