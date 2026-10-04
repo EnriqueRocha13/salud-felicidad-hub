@@ -4,11 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Minus, Plus, Trash2, ShoppingCart } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingCart, Loader2 } from "lucide-react";
 import { BrandName } from "@/components/BrandName";
 
 export default function Cart() {
-  const { items, removeItem, updateQuantity, total, clearCart } = useCart();
+  const { items, hydrated, removeItem, updateQuantity, total, clearCart } = useCart();
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -20,6 +20,14 @@ export default function Cart() {
     }
     navigate("/checkout");
   };
+
+  if (!hydrated) {
+    return (
+      <div className="container py-16 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
