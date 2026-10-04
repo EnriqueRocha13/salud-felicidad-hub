@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface CartItem {
   id: string;
@@ -21,27 +22,35 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_KEY = "sf-cart";
+const LEGACY_KEY = "sf-cart";
+const cartKey = (userId: string | null) => (userId ? `sf-cart-${userId}` : "sf-cart-guest");
+
+function loadCart(key: string): CartItem[] {
+  try {
+    const raw = localStorage.getItem(key) ?? (key !== LEGACY_KEY ? localStorage.getItem(LEGACY_KEY) : null);
+    return raw ? (JSON.parse(raw) as CartItem[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    try {
-      const raw = localStorage.getItem(CART_KEY);
-      return raw ? (JSON.parse(raw) as CartItem[]) : [];
-    } catch {
-      return [];
-    }
-  });
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
+  const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
+  // Load the cart belonging to the current user whenever the account changes.
   useEffect(() => {
+    setHydrated(false);
+    setItems(loadCart(cartKey(userId)));
     setHydrated(true);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (!hydrated) return;
-    try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch { /* ignore */ }
-  }, [items, hydrated]);
+    try { localStorage.setItem(cartKey(userId), JSON.stringify(items)); } catch { /* ignore */ }
+  }, [items, hydrated, userId]);
 
   const addItem = (item: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
