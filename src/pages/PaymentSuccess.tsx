@@ -6,14 +6,17 @@ import { CheckCircle } from "lucide-react";
 import { BrandName } from "@/components/BrandName";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useCart } from "@/contexts/CartContext";
 
 export default function PaymentSuccess() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
   const { t } = useLanguage();
+  const { clearCart } = useCart();
 
   useEffect(() => {
+    clearCart();
     if (orderId) {
       supabase.from("orders").update({ status: "paid", payment_method: "stripe" }).eq("id", orderId).then(({ error }) => {
         if (error) console.error("Error updating order:", error);

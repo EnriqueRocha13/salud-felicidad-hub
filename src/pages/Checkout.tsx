@@ -11,7 +11,7 @@ import { MapPin, Loader2, CreditCard } from "lucide-react";
 import { BrandName } from "@/components/BrandName";
 
 export default function Checkout() {
-  const { items, total, clearCart } = useCart();
+  const { items, total } = useCart();
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
