@@ -10,6 +10,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
+  hydrated: boolean;
   addItem: (item: Omit<CartItem, "quantity">) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -31,10 +32,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [];
     }
   });
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch { /* ignore */ }
-  }, [items]);
+  }, [items, hydrated]);
 
   const addItem = (item: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
@@ -59,7 +66,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, itemCount }}>
+    <CartContext.Provider value={{ items, hydrated, addItem, removeItem, updateQuantity, clearCart, total, itemCount }}>
       {children}
     </CartContext.Provider>
   );
