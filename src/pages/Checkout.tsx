@@ -11,7 +11,7 @@ import { MapPin, Loader2, CreditCard } from "lucide-react";
 import { BrandName } from "@/components/BrandName";
 
 export default function Checkout() {
-  const { items, total } = useCart();
+  const { items, total, hydrated } = useCart();
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -43,6 +43,14 @@ export default function Checkout() {
       setSubmitting(false);
     }
   };
+
+  if (!hydrated) {
+    return (
+      <div className="container py-16 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (items.length === 0) { navigate("/cart"); return null; }
 
