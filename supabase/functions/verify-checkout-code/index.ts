@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { corsHeaders } from "npm:@supabase/supabase-js@2.57.2/cors";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
