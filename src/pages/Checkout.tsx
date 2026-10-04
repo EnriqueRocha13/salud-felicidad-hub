@@ -11,7 +11,7 @@ import { MapPin, Loader2, CreditCard } from "lucide-react";
 import { BrandName } from "@/components/BrandName";
 
 export default function Checkout() {
-  const { items, total, clearCart } = useCart();
+  const { items, total } = useCart();
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -37,7 +37,6 @@ export default function Checkout() {
       await supabase.from("order_items").insert(items.map((item) => ({ order_id: order.id, product_id: item.id, quantity: item.quantity, price_at_order: item.price, product_name: item.name })));
       const { data: paymentData, error: paymentError } = await supabase.functions.invoke("create-payment", { body: { items: items.map((i) => ({ name: i.name, price: i.price, quantity: i.quantity })), orderId: order.id } });
       if (paymentError || !paymentData?.url) { toast({ title: t("error"), description: t("checkout.payment_error"), variant: "destructive" }); setSubmitting(false); return; }
-      clearCart();
       window.location.href = paymentData.url;
     } catch {
       toast({ title: t("error"), description: t("checkout.unexpected_error"), variant: "destructive" });
