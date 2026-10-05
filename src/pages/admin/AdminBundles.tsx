@@ -84,8 +84,8 @@ export default function AdminBundles() {
           <DialogContent>
             <DialogHeader><DialogTitle>{editId ? t("admin.edit_bundle") : t("admin.new_bundle")}</DialogTitle></DialogHeader>
             <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(); }} className="space-y-4">
-              <Input placeholder={t("admin.bundle_name")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required maxLength={200} />
-              <Textarea placeholder={t("admin.bundle_desc")} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} maxLength={10000} />
+              <Input placeholder={t("admin.bundle_name")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+              <Textarea placeholder={t("admin.bundle_desc")} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
               <div>
                 <Label className="mb-2 block">{t("admin.select_products")}</Label>
                 <div className="max-h-48 overflow-y-auto space-y-2 border rounded p-2">

@@ -76,8 +76,8 @@ export default function AdminProducts() {
               <DialogTitle>{editId ? t("admin.edit_product") : t("admin.new_product")}</DialogTitle>
             </DialogHeader>
             <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(); }} className="space-y-4">
-              <Input placeholder={t("admin.product_name")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required maxLength={200} />
-              <Textarea placeholder={t("admin.product_desc")} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} maxLength={10000} />
+              <Input placeholder={t("admin.product_name")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+              <Textarea placeholder={t("admin.product_desc")} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
               <Input type="number" step="0.01" placeholder={t("admin.product_price")} value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
               <div>
                 <Label>{t("admin.product_image")}</Label>
