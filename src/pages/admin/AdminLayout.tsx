@@ -22,7 +22,9 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen flex bg-background">
       <aside className="hidden md:flex w-64 flex-col border-r bg-card p-4 h-screen sticky top-0">
-        <BrandName className="text-lg text-primary mb-6 block" />
+        <Link to="/">
+          <BrandName className="text-lg text-primary mb-6 block" />
+        </Link>
         <nav className="space-y-1 flex-1 overflow-auto">
           {navItems.map((item) => (
             <Link key={item.to} to={item.to}>
