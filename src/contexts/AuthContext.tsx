@@ -40,9 +40,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
+          setAdminLoading(true);
           setTimeout(() => checkAdmin(session.user.id), 0);
         } else {
           setIsAdmin(false);
+          setAdminLoading(false);
         }
         setLoading(false);
       }
@@ -52,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
+        setAdminLoading(true);
         checkAdmin(session.user.id);
       }
       setLoading(false);
