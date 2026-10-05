@@ -62,10 +62,10 @@ export default function Auth() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
-              <Input placeholder={t("auth.name")} value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+              <Input placeholder={t("auth.name")} value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={200} />
             )}
-            <Input type="email" placeholder={t("auth.email")} value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <Input type="password" placeholder={t("auth.password")} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+            <Input type="email" placeholder={t("auth.email")} value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={320} />
+            <Input type="password" placeholder={t("auth.password")} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} maxLength={200} />
 
             {!isLogin && (
               <>
