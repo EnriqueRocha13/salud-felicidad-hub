@@ -79,7 +79,7 @@ export default function AdminChat() {
                 <div ref={bottomRef} />
               </div>
               <form onSubmit={sendMessage} className="border-t p-3 flex gap-2">
-                <Input value={newMsg} onChange={(e) => setNewMsg(e.target.value)} placeholder={t("admin.reply_placeholder")} disabled={sending} />
+                <Input value={newMsg} onChange={(e) => setNewMsg(e.target.value)} placeholder={t("admin.reply_placeholder")} disabled={sending} maxLength={10000} />
                 <Button type="submit" size="icon" disabled={sending || !newMsg.trim()}><Send className="h-4 w-4" /></Button>
               </form>
             </>
